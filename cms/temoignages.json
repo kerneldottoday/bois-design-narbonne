@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "avis-ebenisterie-2018",
+    "citation": "Excellent travail. Quel plaisir de rencontrer enfin un ébéniste qui a l'amour du travail. Très à l'écoute. Travail sur mesure. Je recommande vivement.",
+    "auteur": "Client particulier",
+    "date": "2018-07-27",
+    "note": 5,
+    "categorie_liee": "mobilier",
+    "projet_lie": "meuble-tv-salon-contemporain",
+    "publie": true,
+    "source": "PagesJaunes"
+  },
+  {
+    "slug": "avis-sur-mesure-2017",
+    "citation": "Voilà une entreprise qui propose du vrai sur mesure et des matériaux qui changent de l'ordinaire. J'ai un meuble qui ne ressemble à aucun autre. Merci à l'équipe pour vos conseils. Une très belle rencontre.",
+    "auteur": "Client particulier",
+    "date": "2017-07-19",
+    "note": 5,
+    "categorie_liee": "mobilier",
+    "projet_lie": null,
+    "publie": true,
+    "source": "PagesJaunes"
+  }
+]

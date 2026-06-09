@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réalisations — Cuisines & Mobilier Sur Mesure | BOIS DESIGN Narbonne</title>
+  <meta name="description" content="Découvrez nos réalisations : cuisines, dressings, mobilier et agencements sur mesure à Narbonne et dans l'Aude.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="nav scrolled">
+    <div class="container nav__inner">
+      <a href="index.html" class="logo">BOIS DESIGN</a>
+      <ul class="nav__links">
+        <li><a href="realisations.html">Réalisations</a></li>
+        <li><a href="savoir-faire.html">Savoir-faire</a></li>
+        <li><a href="atelier.html">Atelier</a></li>
+        <li><a href="processus.html">Processus</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="contact.html" class="btn btn--outline nav__cta">Parler de votre projet</a>
+      <button class="menu-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <nav class="mobile-menu" aria-hidden="true">
+    <a href="realisations.html">Réalisations</a>
+    <a href="savoir-faire.html">Savoir-faire</a>
+    <a href="atelier.html">Atelier</a>
+    <a href="processus.html">Processus</a>
+    <a href="contact.html">Contact</a>
+    <a href="contact.html" class="btn btn--primary">Parler de votre projet</a>
+    <a href="tel:+33468454340" class="mobile-menu__phone">04 68 45 43 40</a>
+  </nav>
+
+  <main>
+    <section class="hero hero--page">
+      <div class="hero__bg">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80" alt="">
+        <div class="hero__overlay"></div>
+      </div>
+      <div class="container hero__content reveal">
+        <h1>Réalisations</h1>
+        <p class="lead">Chaque projet est unique. Chaque détail compte.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div id="filters" class="filters reveal">
+          <button class="filter-btn active" data-filter="all">Toutes</button>
+          <button class="filter-btn" data-filter="cuisines">Cuisines</button>
+          <button class="filter-btn" data-filter="dressings">Dressings</button>
+          <button class="filter-btn" data-filter="mobilier">Mobilier</button>
+          <button class="filter-btn" data-filter="escaliers">Escaliers</button>
+          <button class="filter-btn" data-filter="bureaux">Bureaux</button>
+          <button class="filter-btn" data-filter="commerces">Commerces</button>
+        </div>
+        <div id="all-projects" class="projects-grid"></div>
+      </div>
+    </section>
+
+    <section class="cta-banner">
+      <div class="container reveal">
+        <h2>Votre projet mérite la même attention.</h2>
+        <div class="cta-banner__actions">
+          <a href="contact.html" class="btn btn--primary">Demander un devis</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="logo">BOIS DESIGN</div>
+        <p>Le bois sur mesure pensé pour durer.</p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="realisations.html">Réalisations</a></li>
+          <li><a href="savoir-faire.html">Savoir-faire</a></li>
+          <li><a href="atelier.html">Atelier</a></li>
+          <li><a href="processus.html">Processus</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>ZI La Coupe, Route de Perpignan</li>
+          <li>11100 Narbonne</li>
+          <li><a href="tel:+33468454340">04 68 45 43 40</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <span>© 2026 BOIS DESIGN</span>
+    </div>
+  </footer>
+
+  <div class="sticky-cta">
+    <a href="tel:+33468454340" class="btn btn--outline">Appeler</a>
+    <a href="contact.html" class="btn btn--primary">Devis</a>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
