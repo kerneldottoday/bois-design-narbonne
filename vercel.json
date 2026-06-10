@@ -3,5 +3,11 @@
   "installCommand": "",
   "outputDirectory": "prototype",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/realisations/:slug",
+      "destination": "/projet?slug=:slug"
+    }
+  ]
 }

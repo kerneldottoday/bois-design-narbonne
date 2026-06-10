@@ -39,12 +39,15 @@
 
 ## Prototype interactif
 
-```bash
+```powershell
 cd prototype
-npx --yes serve -l 3456
+.\start-local.ps1
 ```
 
 → **http://localhost:3456**
+
+> Version active : **backup du 9 juin 2026** (Inter, liens `.html`).  
+> La refonte Archiform est archivée dans `prototype-archiform-ref/`.
 
 ## Données CMS
 

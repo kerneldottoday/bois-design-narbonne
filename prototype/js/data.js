@@ -73,9 +73,9 @@ const PROJECTS = [
     surface: "4,5 m linéaire",
     featured: true,
     image: IMAGES.mobilier,
-    description_courte: "Meuble TV et rangement en noyer et laque mate — pièce signature.",
+    description_courte: "Meuble TV et rangement en noyer et laque mate, pièce signature.",
     description: [
-      "Pour ce salon contemporain à Narbonne, le client souhaitait un meuble qui intègre écran, rangements et passage de câbles — sans compromis esthétique.",
+      "Pour ce salon contemporain à Narbonne, le client souhaitait un meuble qui intègre écran, rangements et passage de câbles, sans compromis esthétique.",
       "Le noyer sélectionné pour ses veines profondes contraste avec les façades laquées mate. Les assemblages sont réalisés en atelier, les finitions contrôlées une à une.",
       "Un meuble qui ne ressemble à aucun autre, parce qu'il est pensé pour un salon précis.",
     ],

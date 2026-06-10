@@ -1,43 +1,69 @@
+function pageSlug() {
+  const part = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
+  if (!part || part === "index") return "home";
+  return part;
+}
+
+function navHrefSlug(href) {
+  if (!href || href.startsWith("tel:") || href.startsWith("#")) return null;
+  const clean = href.replace(/^\//, "").replace(/\.html$/, "");
+  if (!clean || clean === "index") return "home";
+  return clean;
+}
+
 function initNav() {
   const nav = document.querySelector(".nav");
   const toggle = document.querySelector(".menu-toggle");
-  const mobileMenu = document.querySelector(".mobile-menu");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const isHero = nav?.classList.contains("nav--hero");
 
   if (nav) {
-    window.addEventListener("scroll", () => {
-      nav.classList.toggle("scrolled", window.scrollY > 40);
-    });
+    const syncScroll = () => {
+      const scrolled = !isHero || window.scrollY > 48;
+      nav.classList.toggle("scrolled", scrolled);
+    };
+    syncScroll();
+    window.addEventListener("scroll", syncScroll, { passive: true });
   }
 
-  if (toggle && mobileMenu) {
-    toggle.addEventListener("click", () => {
-      toggle.classList.toggle("open");
-      mobileMenu.classList.toggle("open");
-      document.body.style.overflow = mobileMenu.classList.contains("open")
-        ? "hidden"
-        : "";
-    });
+  const current = pageSlug();
+  document.querySelectorAll(".nav__links a, .mobile-menu a").forEach((link) => {
+    const slug = navHrefSlug(link.getAttribute("href"));
+    if (slug && slug === current) link.classList.add("active");
+  });
 
-    mobileMenu.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        toggle.classList.remove("open");
-        mobileMenu.classList.remove("open");
-        document.body.style.overflow = "";
-      });
-    });
-  }
+  if (!toggle || !mobileMenu) return;
 
-  const current = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".nav__links a, .mobile-menu a").forEach((a) => {
-    const href = a.getAttribute("href");
-    if (href === current || (current === "" && href === "index.html")) {
-      a.classList.add("active");
+  const setMenuOpen = (open) => {
+    toggle.classList.toggle("open", open);
+    mobileMenu.classList.toggle("open", open);
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    toggle.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+    mobileMenu.setAttribute("aria-hidden", open ? "false" : "true");
+    document.body.style.overflow = open ? "hidden" : "";
+  };
+
+  toggle.addEventListener("click", () => {
+    setMenuOpen(!mobileMenu.classList.contains("open"));
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && mobileMenu.classList.contains("open")) {
+      setMenuOpen(false);
     }
+  });
+
+  mobileMenu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setMenuOpen(false));
   });
 }
 
 function initReveal() {
   const els = document.querySelectorAll(".reveal");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    els.forEach((el) => el.classList.add("visible"));
+    return;
+  }
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -54,9 +80,25 @@ function initReveal() {
 
 function initStickyCta() {
   const bar = document.querySelector(".sticky-cta");
-  if (!bar) return;
-  window.addEventListener("scroll", () => {
-    bar.classList.toggle("visible", window.scrollY > window.innerHeight * 0.5);
+  if (!bar || bar.classList.contains("sticky-cta--always")) return;
+  const show = () => {
+    bar.classList.toggle("visible", window.scrollY > window.innerHeight * 0.45);
+  };
+  show();
+  window.addEventListener("scroll", show, { passive: true });
+}
+
+function initShowcaseNotice() {
+  if (sessionStorage.getItem("showcase-notice-dismissed")) return;
+  const notice = document.createElement("div");
+  notice.className = "showcase-notice";
+  notice.setAttribute("role", "status");
+  notice.innerHTML =
+    '<span>Maquette interactive, visuels de démonstration</span><button type="button" aria-label="Fermer">×</button>';
+  document.body.appendChild(notice);
+  notice.querySelector("button").addEventListener("click", () => {
+    notice.hidden = true;
+    sessionStorage.setItem("showcase-notice-dismissed", "1");
   });
 }
 
@@ -68,18 +110,31 @@ function initImageFallbacks() {
   document.querySelectorAll("img").forEach((img) => {
     if (img.dataset.fallbackApplied) return;
     img.dataset.fallbackApplied = "true";
+    if (!img.getAttribute("alt")) img.setAttribute("alt", "");
     img.addEventListener("error", () => {
       if (img.src !== IMAGES.fallback) img.src = IMAGES.fallback;
     });
   });
 }
 
+function projectUrl(slug) {
+  return `/realisations/${slug}`;
+}
+
+function getProjectSlugFromUrl() {
+  const fromQuery = new URLSearchParams(location.search).get("slug");
+  if (fromQuery) return fromQuery;
+  const parts = location.pathname.split("/").filter(Boolean);
+  if (parts[0] === "realisations" && parts.length === 2) return parts[1];
+  return null;
+}
+
 function renderProjectCard(project) {
   const cat = CATEGORIES[project.categorie] || project.categorie;
   return `
-    <a href="projet.html?slug=${project.slug}" class="project-card reveal">
+    <a href="${projectUrl(project.slug)}" class="project-card reveal">
       <div class="project-card__image">
-        <img src="${project.image}" alt="${project.titre} — ${cat} sur mesure BOIS DESIGN" loading="lazy" ${imageFallbackAttr()}>
+        <img src="${project.image}" alt="${project.titre}, ${cat} sur mesure BOIS DESIGN" loading="lazy" ${imageFallbackAttr()}>
       </div>
       <div class="project-card__meta">
         <div class="project-card__cat">${cat}</div>
@@ -129,68 +184,154 @@ function initRealisationsPage() {
 }
 
 function initProjectDetail() {
-  const params = new URLSearchParams(location.search);
-  const slug = params.get("slug");
-  const project = getProject(slug);
+  const container = document.getElementById("project-content");
+  if (!container) return;
 
-  if (!project) {
-    document.getElementById("project-content").innerHTML =
-      '<p>Projet introuvable. <a href="realisations.html">Retour aux réalisations</a></p>';
+  const slug = getProjectSlugFromUrl();
+  if (!slug) {
+    if (document.body.classList.contains("page-projet")) {
+      container.innerHTML = `
+        <section class="section page-content">
+          <div class="container">
+            <h1 class="h1">Réalisations</h1>
+            <p class="lead">Sélectionnez un projet depuis la <a href="/realisations">galerie des réalisations</a>.</p>
+          </div>
+        </section>`;
+    }
     return;
   }
 
-  document.title = `${project.titre} — BOIS DESIGN`;
+  const project = getProject(slug);
+
+  if (!project) {
+    document.title = "Projet introuvable, BOIS DESIGN";
+    container.innerHTML = `
+      <section class="section page-content">
+        <div class="container">
+          <nav class="breadcrumb" aria-label="Fil d'Ariane">
+            <a href="/realisations">Réalisations</a>
+          </nav>
+          <h1 class="h1">Projet introuvable</h1>
+          <p class="lead">Ce projet n'existe pas ou n'est plus disponible.</p>
+          <a href="/realisations" class="btn btn--primary">Voir toutes les réalisations</a>
+        </div>
+      </section>`;
+    return;
+  }
+
+  if (location.search.includes("slug=")) {
+    history.replaceState(null, "", projectUrl(slug));
+  }
 
   const cat = CATEGORIES[project.categorie];
   const { prev, next } = getAdjacentProjects(slug);
 
-  document.getElementById("project-content").innerHTML = `
-    <div class="project-hero">
-      <img src="${project.image}" alt="${project.titre}" ${imageFallbackAttr()}>
-    </div>
+  document.title = `${project.titre}, ${cat} sur mesure | BOIS DESIGN Narbonne`;
+
+  const meta = document.querySelector('meta[name="description"]');
+  if (meta) {
+    meta.setAttribute("content", project.description_courte);
+  }
+
+  document.querySelectorAll(".nav__links a").forEach((link) => {
+    if (navHrefSlug(link.getAttribute("href")) === "realisations") {
+      link.classList.add("active");
+    }
+  });
+
+  container.innerHTML = `
+    <section class="project-hero">
+      <img src="${project.image}" alt="${project.titre}, ${cat} sur mesure à ${project.lieu}" ${imageFallbackAttr()}>
+    </section>
     <div class="container section section--tight">
-      <div class="overline">${cat}</div>
-      <h1 class="h1">${project.titre}</h1>
-      <div class="project-meta">
+      <nav class="breadcrumb reveal" aria-label="Fil d'Ariane">
+        <a href="/realisations">Réalisations</a>
+        <span aria-hidden="true">/</span>
+        <span>${cat}</span>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">${project.titre}</span>
+      </nav>
+      <div class="overline reveal">${cat}</div>
+      <h1 class="h1 reveal">${project.titre}</h1>
+      <p class="lead project-lead reveal">${project.description_courte}</p>
+      <div class="project-meta reveal">
         <span>${project.annee}</span>
         <span>${project.lieu}</span>
         <span>${project.surface}</span>
         <span>${project.type_client}</span>
       </div>
-      <div class="project-body">
+      <div class="project-body reveal">
         ${project.description.map((p) => `<p>${p}</p>`).join("")}
       </div>
-      <div class="materials">
+      <div class="materials reveal">
+        <p class="materials__label">Matériaux</p>
         ${project.materiaux.map((m) => `<span class="material-tag">${m}</span>`).join("")}
       </div>
-      <div class="project-gallery">
-        ${project.galerie.map((img, i) => `<img src="${img}" alt="${project.titre} — vue ${i + 1}" loading="lazy" ${imageFallbackAttr()}>`).join("")}
+      <div class="project-gallery reveal">
+        ${project.galerie.map((img, i) => `<img src="${img}" alt="${project.titre}, vue ${i + 1}" loading="lazy" ${imageFallbackAttr()}>`).join("")}
       </div>
-      <div class="project-nav">
-        <a href="projet.html?slug=${prev.slug}" class="btn--text">← ${prev.titre}</a>
-        <a href="contact.html" class="btn btn--primary">Un projet similaire ?</a>
-        <a href="projet.html?slug=${next.slug}" class="btn--text">${next.titre} →</a>
+      <div class="project-nav reveal">
+        <a href="${projectUrl(prev.slug)}" class="btn--text">← ${prev.titre}</a>
+        <a href="/contact" class="btn btn--primary">Un projet similaire ?</a>
+        <a href="${projectUrl(next.slug)}" class="btn--text">${next.titre} →</a>
       </div>
     </div>
+    <section class="cta-banner">
+      <div class="container reveal">
+        <h2>Votre projet mérite la même attention.</h2>
+        <div class="cta-banner__actions">
+          <a href="/contact" class="btn btn--primary">Demander un devis</a>
+          <a href="/realisations" class="btn btn--outline">Toutes les réalisations</a>
+        </div>
+      </div>
+    </section>
   `;
+
+  initReveal();
+  initImageFallbacks();
+}
+
+async function ensureSiteFooter() {
+  const footer = document.getElementById("site-footer");
+  if (footer?.querySelector(".footer__grid")) return;
+
+  try {
+    const res = await fetch("/partials/site-footer.html");
+    if (!res.ok) return;
+    const html = await res.text();
+    document.querySelector(".sticky-cta")?.remove();
+    document.querySelector("footer.footer")?.remove();
+    document.body.insertAdjacentHTML("beforeend", html);
+  } catch (_) {
+    /* hors-ligne ou fichier manquant */
+  }
 }
 
 function initContactForm() {
   const form = document.getElementById("contact-form");
   const success = document.getElementById("form-success");
+  const error = document.getElementById("form-error");
   if (!form) return;
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    if (!form.checkValidity()) {
+      if (error) error.hidden = false;
+      form.reportValidity();
+      return;
+    }
+    if (error) error.hidden = true;
     form.style.display = "none";
     if (success) success.classList.add("visible");
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await ensureSiteFooter();
   initNav();
   initReveal();
   initStickyCta();
+  initShowcaseNotice();
   initHomeProjects();
   initRealisationsPage();
   initProjectDetail();
