@@ -129,20 +129,73 @@ function getProjectSlugFromUrl() {
   return null;
 }
 
-function renderProjectCard(project) {
+function renderProjectCard(project, options = {}) {
   const cat = CATEGORIES[project.categorie] || project.categorie;
+  const alt = `${project.titre}, ${cat} sur mesure BOIS DESIGN`;
+  const meta = `
+        <div class="project-card__cat">${cat}</div>
+        <div class="project-card__title">${project.titre}</div>
+        <div class="project-card__info">${project.annee} · ${project.lieu}</div>`;
+
+  if (options.lightboxImage) {
+    return `
+    <article class="project-card reveal">
+      <button type="button" class="project-card__image project-card__zoom" aria-label="Agrandir ${project.titre}">
+        <img src="${project.image}" alt="${alt}" loading="lazy" ${imageFallbackAttr()}>
+      </button>
+      <a href="${projectUrl(project.slug)}" class="project-card__meta">
+        ${meta}
+      </a>
+    </article>`;
+  }
+
   return `
     <a href="${projectUrl(project.slug)}" class="project-card reveal">
       <div class="project-card__image">
-        <img src="${project.image}" alt="${project.titre}, ${cat} sur mesure BOIS DESIGN" loading="lazy" ${imageFallbackAttr()}>
+        <img src="${project.image}" alt="${alt}" loading="lazy" ${imageFallbackAttr()}>
       </div>
       <div class="project-card__meta">
-        <div class="project-card__cat">${cat}</div>
-        <div class="project-card__title">${project.titre}</div>
-        <div class="project-card__info">${project.annee} · ${project.lieu}</div>
+        ${meta}
       </div>
-    </a>
-  `;
+    </a>`;
+}
+
+function initImageLightbox() {
+  let lightbox = document.getElementById("image-lightbox");
+  if (!lightbox) {
+    lightbox = document.createElement("div");
+    lightbox.id = "image-lightbox";
+    lightbox.className = "image-lightbox";
+    lightbox.hidden = true;
+    lightbox.innerHTML = `
+      <button type="button" class="image-lightbox__backdrop" aria-label="Fermer"></button>
+      <figure class="image-lightbox__figure">
+        <button type="button" class="image-lightbox__close" aria-label="Fermer">×</button>
+        <img class="image-lightbox__img" alt="">
+      </figure>`;
+    document.body.appendChild(lightbox);
+
+    const close = () => {
+      lightbox.hidden = true;
+      document.body.classList.remove("lightbox-open");
+      lightbox.querySelector(".image-lightbox__img").removeAttribute("src");
+    };
+
+    lightbox.querySelector(".image-lightbox__close").addEventListener("click", close);
+    lightbox.querySelector(".image-lightbox__backdrop").addEventListener("click", close);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !lightbox.hidden) close();
+    });
+  }
+
+  return (src, alt) => {
+    const img = lightbox.querySelector(".image-lightbox__img");
+    img.src = src;
+    img.alt = alt || "";
+    lightbox.hidden = false;
+    document.body.classList.add("lightbox-open");
+    lightbox.querySelector(".image-lightbox__close").focus();
+  };
 }
 
 function initHomeProjects() {
@@ -158,6 +211,7 @@ function initRealisationsPage() {
   const filters = document.getElementById("filters");
   if (!grid) return;
 
+  const openLightbox = initImageLightbox();
   let active = "all";
 
   function render(filter) {
@@ -165,8 +219,19 @@ function initRealisationsPage() {
       filter === "all"
         ? PROJECTS
         : PROJECTS.filter((p) => p.categorie === filter);
-    grid.innerHTML = list.map(renderProjectCard).join("");
+    grid.innerHTML = list.map((p) => renderProjectCard(p, { lightboxImage: true })).join("");
     initReveal();
+    initImageFallbacks();
+  }
+
+  if (!grid.dataset.lightboxBound) {
+    grid.dataset.lightboxBound = "1";
+    grid.addEventListener("click", (e) => {
+      const btn = e.target.closest(".project-card__zoom");
+      if (!btn) return;
+      const img = btn.querySelector("img");
+      if (img) openLightbox(img.src, img.alt);
+    });
   }
 
   if (filters) {
