@@ -27,12 +27,14 @@ function initNav() {
   }
 
   const current = pageSlug();
-  document.querySelectorAll(".nav__links a, .mobile-menu a").forEach((link) => {
+  document.querySelectorAll(".nav__links a, .mobile-menu__nav a").forEach((link) => {
     const slug = navHrefSlug(link.getAttribute("href"));
     if (slug && slug === current) link.classList.add("active");
   });
 
   if (!toggle || !mobileMenu) return;
+
+  const backdrop = mobileMenu.querySelector(".mobile-menu__backdrop");
 
   const setMenuOpen = (open) => {
     toggle.classList.toggle("open", open);
@@ -40,12 +42,14 @@ function initNav() {
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
     toggle.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
     mobileMenu.setAttribute("aria-hidden", open ? "false" : "true");
-    document.body.style.overflow = open ? "hidden" : "";
+    document.body.classList.toggle("menu-open", open);
   };
 
   toggle.addEventListener("click", () => {
     setMenuOpen(!mobileMenu.classList.contains("open"));
   });
+
+  backdrop?.addEventListener("click", () => setMenuOpen(false));
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && mobileMenu.classList.contains("open")) {

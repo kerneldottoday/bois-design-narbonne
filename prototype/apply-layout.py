@@ -23,20 +23,31 @@ HEADER_HOME = """  <a class="skip-link" href="#main">Aller au contenu</a>
       </nav>
       <a href="/contact" class="btn btn--outline nav__cta">Demander un devis</a>
       <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Ouvrir le menu">
-        <span></span><span></span><span></span>
+        <span class="menu-toggle__bars" aria-hidden="true">
+          <span class="menu-toggle__bar"></span>
+          <span class="menu-toggle__bar"></span>
+        </span>
       </button>
     </div>
   </header>
 
-  <nav class="mobile-menu" id="mobile-menu" aria-label="Menu mobile" aria-hidden="true">
-    <a href="/realisations">Réalisations</a>
-    <a href="/savoir-faire">Savoir-faire</a>
-    <a href="/atelier">Atelier</a>
-    <a href="/processus">Processus</a>
-    <a href="/contact">Contact</a>
-    <a href="/contact" class="btn btn--primary mobile-menu__cta">Demander un devis</a>
-    <a href="tel:+33468454340" class="mobile-menu__phone">04 68 45 43 40</a>
-  </nav>"""
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <button type="button" class="mobile-menu__backdrop" aria-label="Fermer le menu" tabindex="-1"></button>
+    <aside class="mobile-menu__panel" aria-label="Menu mobile">
+      <p class="mobile-menu__label">Navigation</p>
+      <nav class="mobile-menu__nav" aria-label="Liens du menu">
+        <a href="/realisations">Réalisations</a>
+        <a href="/savoir-faire">Savoir-faire</a>
+        <a href="/atelier">Atelier</a>
+        <a href="/processus">Processus</a>
+        <a href="/contact">Contact</a>
+      </nav>
+      <div class="mobile-menu__footer">
+        <a href="/contact" class="btn btn--primary mobile-menu__cta">Demander un devis</a>
+        <a href="tel:+33468454340" class="mobile-menu__phone">04 68 45 43 40</a>
+      </div>
+    </aside>
+  </div>"""
 
 HEADER_INNER = HEADER_HOME.replace('class="nav nav--hero"', 'class="nav nav--inner"')
 
