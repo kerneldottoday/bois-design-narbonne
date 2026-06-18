@@ -9,17 +9,17 @@ const CATEGORIES = {
 };
 
 const IMAGES = {
-  fallback: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
-  hero: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80",
-  atelier: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=80",
-  cuisine: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=1200&q=80",
-  dressing: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80",
-  mobilier: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1200&q=80",
-  bureau: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80",
-  boutique: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80",
-  escalier: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80",
-  wood: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80",
-  detail: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
+  fallback: "https://images.unsplash.com/photo-1604478579007-70de3dee20cb?w=1200&q=80",
+  hero: "https://images.unsplash.com/photo-1618582383736-ed9080511254?w=1920&q=80",
+  atelier: "https://images.unsplash.com/photo-1586064957227-11d763b135a1?w=1200&q=80",
+  cuisine: "https://images.unsplash.com/photo-1666003449012-61951d621555?w=1200&q=80",
+  dressing: "https://images.unsplash.com/photo-1774301211236-dab64d553241?w=1200&q=80",
+  mobilier: "https://images.unsplash.com/photo-1615875605825-5eb9bb5d52ac?w=1200&q=80",
+  bureau: "https://images.unsplash.com/photo-1614620026694-f5f38182ab9f?w=1200&q=80",
+  boutique: "https://images.unsplash.com/photo-1546213290-e1b492ab3eee?w=1200&q=80",
+  escalier: "https://images.unsplash.com/photo-1560170433-bc0adc32bccd?w=1200&q=80",
+  wood: "https://images.unsplash.com/photo-1590880795696-20c7dfadacde?w=1200&q=80",
+  detail: "https://images.unsplash.com/photo-1621295693450-080546d2ec8e?w=1200&q=80",
 };
 
 const PROJECTS = [
